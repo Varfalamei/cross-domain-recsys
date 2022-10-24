@@ -24,7 +24,7 @@ cd cross-domain-recsys
 4. ...
 
 ``` shell
-For contributing please use linterts and hooks the following commands:
+# For contributing please use linterts and hooks the following commands:
 black .
 pre-commit run --all-files
  ```
