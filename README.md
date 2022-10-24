@@ -16,12 +16,13 @@ cd cross-domain-recsys
 ```
 
 
-## Contributors
+## Main contributors
 
-1. Шакиров Ренат
-2. ...
-3. ...
-4. ...
+Product owner: [Эмиль](https://github.com/feldlime) 
+
+1. [Шакиров Ренат](https://github.com/Varfalamei)
+2. [Скрягин Илья](...)
+3. [Крестенко Анатолий](https://github.com/likeblood)
 
 ``` shell
 # For contributing please use linterts and hooks the following commands:
