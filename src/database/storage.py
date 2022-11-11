@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from structs import ItemType
+from src.structs import ItemType
 
 
 class FilmsBooksStorage(ABC):

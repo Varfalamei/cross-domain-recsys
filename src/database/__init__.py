@@ -1,4 +1,4 @@
-from database.local_storage import FilmsBooksLocalStorage
+from src.database.local_storage import FilmsBooksLocalStorage
 
 
 __all__ = ['FilmsBooksLocalStorage']
