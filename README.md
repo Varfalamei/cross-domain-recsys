@@ -28,3 +28,18 @@ Product owner: [Эмиль](https://github.com/feldlime)
 black .
 pre-commit run --all-files
  ```
+
+## How to run bot
+
+```
+python3 -m venv venv
+source venv/bin/activate
+pip3 install -r requirements.txt
+
+export MODEL_PATH=/path/to/model
+export BOOKS_PATH=/path/to/books
+export FILMS_PATH=/path/to/films
+export PYTHONPATH=/path/to/project
+
+python3 bot.py
+```

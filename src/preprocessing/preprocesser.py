@@ -2,8 +2,18 @@ import pandas as pd
 
 
 class Preprocessor:
-
+    """Preprocessor
+    """
     def create_features(self, books: pd.DataFrame, films: pd.DataFrame) -> pd.DataFrame:
+        """Generate data by frames
+
+        Args:
+            books (pd.DataFrame): books db
+            films (pd.DataFrame): films db
+
+        Returns:
+            pd.DataFrame: featured df with books X films size
+        """
         
         books['key'] = 0
         films['key'] = 0
