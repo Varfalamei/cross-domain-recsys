@@ -1,8 +1,17 @@
 from typing import Dict, List
 import pandas as pd
 
+def IoU(films_rec: list, films_match: list):
+    films_rec = set(films_rec)
+    films_match = set(films_match)
+    intersection = films_rec.intersection(films_match)
+    max_length = max(len(films_rec), len(films_match))
+
+    return len(intersection) / max_length
+
+
 def metric_film_adaptations(
-    recommendations: Dict[int, List[int]],
+    recommendations: pd.DataFrame,
     matching: pd.DataFrame
 ) -> float:
     """
@@ -10,7 +19,7 @@ def metric_film_adaptations(
     We want to know if we have a movie adaptation of the book in our recommendation.
 
     How to calculate:
-      If there is a film adaptation of the book, we put a match, otherwise there
+      If there is a film adaptation of the book, we put a match, otherwise there 
       is no match. If there aren't any film adaptations we add 0.5 to result.
       Next, we average the result
 
@@ -18,7 +27,7 @@ def metric_film_adaptations(
       This metric like a roc_auc. If metric > 0.5, it is good, otherwise it is bad XD
 
     Input:
-      recommendations: Dict with book id as a key and movie ids as value
+      recommendations: Dataframe with book id as a key and movie ids as value
       matching: Dataframe that contains a book id and a movie id.
                 Has to have 'id_book' and 'id_film' columns
 
@@ -26,19 +35,33 @@ def metric_film_adaptations(
       metric value
     """
 
-    assert 'id_book' in set(matching.columns) and 'id_film' in set(matching.columns), \
+    assert 'book_id' in set(recommendations.columns) and \
+      'film_id' in set(recommendations.columns) and \
+      'book_id' in set(matching.columns) and \
+      'film_id' in set(matching.columns), \
       "matching doesn't contain right columns, please rename them to id_film and id_book"
-    book_ids = list(recommendations.keys())
-    result = 0
 
-    for book_id in book_ids:
-        film_adaptations = matching[matching.id_book == book_id].id_film.tolist()
-        if film_adaptations:
-            if set(film_adaptations).intersection(set(recommendations[book_id])) != set():
-                result += 1
-            else:
-                result += 0
-        else:
-            result += 0.5
+    matching = (
+        matching
+        .groupby(['book_id'])['film_id']
+        .apply(list)
+        .reset_index(name='film_id')
+    )
+    recommendations = (
+        recommendations
+        .groupby(['book_id'])['film_id']
+        .apply(list)
+        .reset_index(name='film_id')
+    )
+    
 
-    return round(result / len(book_ids), 4)
+    book_intersection = recommendations.merge(
+        matching, on='book_id', how='inner', suffixes=('_rec', '_match')
+    )
+
+    print('intersection of datasets is - ', len(book_intersection))
+
+    book_intersection = book_intersection.apply(lambda x: IoU(x['film_id_rec'], x['film_id_match']), axis=1)
+    result = sum(book_intersection) / book_intersection.shape[0]
+
+    return result
