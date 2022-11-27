@@ -21,11 +21,25 @@ cd cross-domain-recsys
 Product owner: [Эмиль](https://github.com/feldlime) 
 
 1. [Шакиров Ренат](https://github.com/Varfalamei)
-2. [Скрягин Илья](...)
-3. [Крестенко Анатолий](https://github.com/likeblood)
+2. [Крестенко Анатолий](https://github.com/likeblood)
 
 ``` shell
 # For contributing please use linterts and hooks the following commands:
 black .
 pre-commit run --all-files
  ```
+
+## How to run bot
+
+```
+python3 -m venv venv
+source venv/bin/activate
+pip3 install -r requirements.txt
+
+export MODEL_PATH=/path/to/model
+export BOOKS_PATH=/path/to/books
+export FILMS_PATH=/path/to/films
+export PYTHONPATH=/path/to/project
+
+python3 bot.py
+```
