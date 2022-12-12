@@ -87,4 +87,5 @@ MODELS = {
     'my_new_model': LemmasModel('/src/models/my_new_model.bin'),
 }
 ```
-Than you can set this model to defualt on bot or switch it using 
+Than you can set this model to defualt in bot or switch it using /switch_model
+3. All models should be stored in `models/` and all local storages should store in 'data/'
