@@ -7,9 +7,13 @@ def string_to_set(string: str) -> set:
     Returns:
         set: resulted set
     """
+    if string == 'set()':
+        return set()
+
     res = set(string.replace('{', '').replace('}', '').replace('\\', '').replace("'", '').replace('"', '').strip().split(','))
     clear_res = set()
     for elem in res:
-        clear_res.add(elem.strip())
+        selem = elem.strip()
+        clear_res.add(selem)
 
     return clear_res

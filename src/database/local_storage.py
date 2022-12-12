@@ -9,6 +9,7 @@ from src.structs import ItemType
 from src.utils import string_to_set
 from src.preprocessing import Preprocessor
 
+
 def search(user_input: str, database: List) -> List:
     """Simple search engine to find user_input
     title in list of title in database
@@ -28,13 +29,14 @@ def search(user_input: str, database: List) -> List:
             'data': film.split(),
             'counter': 0,
         }
-    
+
     for word in words:
         for film, data in info_states.items():
             info_states[film]['counter'] += len(difflib.get_close_matches(word, data['data']))
-    
+
     res = {k: v for k, v in sorted(info_states.items(), key=lambda item: -item[1]['counter'])}
     res = [k for k, v in res.items() if v['counter'] >= 1][0:5]
+
     return res
 
 
@@ -60,7 +62,7 @@ class FilmsBooksLocalStorage(FilmsBooksStorage):
         self._films['lemmas_inter'] = self._films['lemmas_inter'].apply(lambda x: string_to_set(x))
         self._films['id'] = self._films['id'].astype(int)
 
-    def __get_replica(self, _type: ItemType) -> pd.DataFrame:
+    def get_replica(self, _type: ItemType) -> pd.DataFrame:
         """Return exact dataframe by ItemType
 
         Args:
@@ -87,7 +89,7 @@ class FilmsBooksLocalStorage(FilmsBooksStorage):
             Dict: info from db
         """
 
-        data = self.__get_replica(_type)
+        data = self.get_replica(_type)
         res = data[data['id'] == _id].to_dict('list')
         for k, v in res.items():
             res[k] = v[0]
@@ -103,7 +105,7 @@ class FilmsBooksLocalStorage(FilmsBooksStorage):
         Returns:
             List: return best matches using searching engine
         """
-        data = self.__get_replica(_type)
+        data = self.get_replica(_type)
         return search(title, data['title'].values)
 
     def find_id_by_title(self, title: str, _type: ItemType) -> int:
@@ -116,9 +118,10 @@ class FilmsBooksLocalStorage(FilmsBooksStorage):
         Returns:
             int: item id in db
         """
-        data = self.__get_replica(_type)
+        data = self.get_replica(_type)
 
         try:
+            print(title)
             return data[data.title == title].sort_values('popularity', ascending=False).head(1)['id'].item()
         except Exception as e:
             print(e)
@@ -137,18 +140,3 @@ class FilmsBooksLocalStorage(FilmsBooksStorage):
             self._books[self._books['id'] == _id], 
             self._films
         )
-
-    def recommend(self, _id: int, model) -> List[int]:
-        """recommend algorithm
-
-        Args:
-            _id (int): book id
-            model (_type_): model with predict_proba method
-
-        Returns:
-            List[int]: recommendations [id]
-        """
-        data = self.preprocess_book_by_id(_id)
-        data['rec'] = data['accuracy']
-        data['rec'] = model.predict_proba(data.drop(['book_id', 'film_id'], axis=1))[0:, 0]
-        return list(data.sort_values('rec').tail(5)['film_id'].values)
